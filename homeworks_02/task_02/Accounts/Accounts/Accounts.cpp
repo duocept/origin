@@ -9,7 +9,7 @@ struct Account {
 };
 
 void print(Account& account){
-    std::cout << "Ваш счёт : " << account.name << ", " << account.account_number << ", " << account.balance;
+    std::cout << "Ваш счёт : " << account.name << ", " << account.account_number << ", " << account.balance << std::endl;
 }
 
 void change_balance(Account& account) {
