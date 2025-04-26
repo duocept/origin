@@ -18,7 +18,6 @@ void change_balance(Account& account) {
 
 int main()
 {
-    //setlocale(LC_ALL, "rus");
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
