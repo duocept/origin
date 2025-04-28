@@ -12,8 +12,8 @@ void print(Account& account){
     std::cout << "Ваш счёт : " << account.name << ", " << account.account_number << ", " << account.balance << std::endl;
 }
 
-void change_balance(Account& account) {
-    std::cin >> account.balance;
+void change_balance(Account& account, double new_balance) {
+    account.balance = new_balance;
 }
 
 int main()
@@ -32,8 +32,11 @@ int main()
     std::cout << "Введите баланс : ";
     std::cin >> person_account.balance;
 
-    std::cout << "Введите новый баланс :";
-    change_balance(person_account);
+    double new_balance;
+    std::cout << "Введите новый баланс: ";
+    std::cin >> new_balance;
+
+    change_balance(person_account, new_balance);
 
     print(person_account);
 
