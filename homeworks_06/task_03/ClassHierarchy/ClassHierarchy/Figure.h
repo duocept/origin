@@ -1,4 +1,3 @@
-#pragma once
 #ifndef FIGURE_H
 #define FIGURE_H
 #include <string>

@@ -1,4 +1,3 @@
-#pragma once
 #ifndef RIGHTTRIANGLE_H
 #define RIGHTTRIANGLE_H
 #include "Triangle.h"

@@ -1,4 +1,3 @@
-#pragma once
 #ifndef QUADRANGLE_H
 #define QUADRANGLE_H
 #include "Figure.h"

@@ -1,4 +1,3 @@
-#pragma once
 #ifndef RHOMBUS_H
 #define RHOMBUS_H
 #include "Parallelogram.h"

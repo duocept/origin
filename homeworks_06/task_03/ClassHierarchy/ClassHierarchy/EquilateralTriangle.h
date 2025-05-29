@@ -1,4 +1,3 @@
-#pragma once
 #ifndef EQUILATERALTRIANGLE_H
 #define EQUILATERALTRIANGLE_H
 #include "Triangle.h"

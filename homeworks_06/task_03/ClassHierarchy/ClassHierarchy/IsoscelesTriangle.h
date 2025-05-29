@@ -1,4 +1,3 @@
-#pragma once
 #ifndef ISOSCELESTRIANGLE_H
 #define ISOSCELESTRIANGLE_H
 #include "Triangle.h"

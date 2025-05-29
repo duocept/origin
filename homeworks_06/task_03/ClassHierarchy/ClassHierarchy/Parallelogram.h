@@ -1,4 +1,3 @@
-#pragma once
 #ifndef PARALLELOGRAM_H
 #define PARALLELOGRAM_H
 #include "Quadrangle.h"

@@ -1,4 +1,3 @@
-#pragma once
 #ifndef RECTANGLEQ_H
 #define RECTANGLEQ_H
 #include "Quadrangle.h"
