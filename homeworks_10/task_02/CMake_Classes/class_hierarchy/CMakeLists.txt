@@ -1,19 +1,35 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.12)
 
 project(class_hierarchy LANGUAGES CXX)
 
-add_executable(class_hierarchy
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(SOURCES
     main.cpp
-    Figure.cpp Figure.h
-    Triangle.cpp Triangle.h
-    RightTriangle.cpp RightTriangle.h
-    IsoscelesTriangle.cpp IsoscelesTriangle.h
-    EquilateralTriangle.cpp EquilateralTriangle.h
-    Quadrangle.cpp Quadrangle.h
-    RectangleQ.cpp RectangleQ.h
-    Square.cpp Square.h
-    Parallelogram.cpp Parallelogram.h
-    Rhombus.cpp Rhombus.h
+    Figure.cpp
+    Triangle.cpp
+    RightTriangle.cpp
+    IsoscelesTriangle.cpp
+    EquilateralTriangle.cpp
+    Quadrangle.cpp
+    RectangleQ.cpp
+    Square.cpp
+    Parallelogram.cpp
+    Rhombus.cpp
 )
 
-target_compile_features(class_hierarchy PRIVATE cxx_std_17)
+set(HEADERS
+    Figure.h
+    Triangle.h
+    RightTriangle.h
+    IsoscelesTriangle.h
+    EquilateralTriangle.h
+    Quadrangle.h
+    RectangleQ.h
+    Square.h
+    Parallelogram.h
+    Rhombus.h
+)
+
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
