@@ -5,8 +5,8 @@
 
 class Fraction {
 private:
-    int numerator_;
-    int denominator_;
+    long long numerator_;   // ранее был int
+    long long denominator_; // то же самое
 
     static int gcd(int a, int b) {
         a = std::abs(a);
@@ -31,19 +31,19 @@ private:
     }
 
 public:
-    Fraction(int numerator = 0, int denominator = 1)
+    Fraction(long long numerator = 0, long long denominator = 1)
         : numerator_(numerator), denominator_(denominator) {
         normalize();
     }
 
     // ----- сравнения (из задачи 1) -----
     friend bool operator==(const Fraction& a, const Fraction& b) {
-        return (long long)a.numerator_ * b.denominator_
-            == (long long)b.numerator_ * a.denominator_;
+        return a.numerator_ * b.denominator_
+            == b.numerator_ * a.denominator_;
     }
     friend bool operator<(const Fraction& a, const Fraction& b) {
-        return (long long)a.numerator_ * b.denominator_
-            < (long long)b.numerator_* a.denominator_;
+        return a.numerator_ * b.denominator_
+            < b.numerator_* a.denominator_;
     }
     friend bool operator!=(const Fraction& a, const Fraction& b) { return !(a == b); }
     friend bool operator>(const Fraction& a, const Fraction& b) { return b < a; }
@@ -57,26 +57,26 @@ public:
 
     // ----- арифметика -----
     friend Fraction operator+(const Fraction& a, const Fraction& b) {
-        long long num = (long long)a.numerator_ * b.denominator_
-            + (long long)b.numerator_ * a.denominator_;
-        long long den = (long long)a.denominator_ * b.denominator_;
+        long long num = a.numerator_ * b.denominator_
+            + b.numerator_ * a.denominator_;
+        long long den = a.denominator_ * b.denominator_;
         return Fraction((int)num, (int)den);
     }
     friend Fraction operator-(const Fraction& a, const Fraction& b) {
-        long long num = (long long)a.numerator_ * b.denominator_
-            - (long long)b.numerator_ * a.denominator_;
-        long long den = (long long)a.denominator_ * b.denominator_;
+        long long num = a.numerator_ * b.denominator_
+            - b.numerator_ * a.denominator_;
+        long long den = a.denominator_ * b.denominator_;
         return Fraction((int)num, (int)den);
     }
     friend Fraction operator*(const Fraction& a, const Fraction& b) {
-        long long num = (long long)a.numerator_ * b.numerator_;
-        long long den = (long long)a.denominator_ * b.denominator_;
+        long long num = a.numerator_ * b.numerator_;
+        long long den = a.denominator_ * b.denominator_;
         return Fraction((int)num, (int)den);
     }
     friend Fraction operator/(const Fraction& a, const Fraction& b) {
         if (b.numerator_ == 0) throw std::domain_error("Division by zero fraction");
-        long long num = (long long)a.numerator_ * b.denominator_;
-        long long den = (long long)a.denominator_ * b.numerator_;
+        long long num = a.numerator_ * b.denominator_;
+        long long den = a.denominator_ * b.numerator_;
         return Fraction((int)num, (int)den);
     }
 
