@@ -1,0 +1,6 @@
+﻿cmake_minimum_required (VERSION 3.22)
+project ("DynLib_CMake")
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) 
+add_library(LeaveDynLib SHARED Leaver.h Leaver.cpp)
+add_executable(LeaveExe DynLibCMake_Client.cpp)
+target_link_libraries(LeaveExe LeaveDynLib)
