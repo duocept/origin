@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#ifdef LEAVELIBRARYDYNAMIC_EXPORTS
+#ifdef LEAVELIBRARY_EXPORTS
 #define LEAVELIBRARY_API __declspec(dllexport)
 #else
 #define LEAVELIBRARY_API __declspec(dllimport)
