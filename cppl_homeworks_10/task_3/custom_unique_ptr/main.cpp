@@ -1,6 +1,7 @@
 ﻿// кастомный std::unique_ptr
 #include <utility>   // std::swap, std::move
 #include <iostream>
+#include <stdexcept> // добавлено: для выброса исключения при разыменовании nullptr
 
 template <typename T>
 class unique_ptr_simplified {
@@ -26,7 +27,14 @@ public:
     }
 
     // Оператор * для доступа к объекту
-    T& operator*() const noexcept { return *ptr_; }
+    // добавлено: проверка на nullptr + снят noexcept, т.к. бросаем исключение
+    T& operator*() const {
+        if (!ptr_) {
+            // добавлено: предотвращаем UB при разыменовании пустого указателя
+            throw std::runtime_error("unique_ptr_simplified: null dereference");
+        }
+        return *ptr_;
+    }
 
     // Оператор -> как у обычного умного указателя
     T* operator->() const noexcept { return ptr_; }
