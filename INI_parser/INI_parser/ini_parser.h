@@ -8,7 +8,6 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
-#include <optional>
 
 namespace ini {
 
@@ -50,13 +49,13 @@ namespace ini {
     }
 
     inline bool starts_with_comment_or_empty(std::string_view sv) {
-        // пропустить начальные пробелы
+        // РїСЂРѕРїСѓСЃС‚РёС‚СЊ РЅР°С‡Р°Р»СЊРЅС‹Рµ РїСЂРѕР±РµР»С‹
         size_t i = 0;
         while (i < sv.size() && is_space(sv[i])) ++i;
         return (i == sv.size()) || sv[i] == ';';
     }
 
-    // простая обрезка инлайн-комментария: всё после первого ';'
+    // РїСЂРѕСЃС‚Р°СЏ РѕР±СЂРµР·РєР° РёРЅР»Р°Р№РЅ-РєРѕРјРјРµРЅС‚Р°СЂРёСЏ: РІСЃС‘ РїРѕСЃР»Рµ РїРµСЂРІРѕРіРѕ ';'
     inline std::string strip_inline_comment(std::string_view sv) {
         size_t pos = sv.find(';');
         if (pos == std::string_view::npos) return std::string(sv);
@@ -64,7 +63,7 @@ namespace ini {
     }
 
     inline std::vector<std::string> split_section_dot_key(const std::string& path) {
-        // ищем последний '.'
+        // РёС‰РµРј РїРѕСЃР»РµРґРЅРёР№ '.'
         auto pos = path.rfind('.');
         if (pos == std::string::npos || pos == 0 || pos + 1 >= path.size())
             throw key_error("Use \"section.key\" format (got \"" + path + "\")");
@@ -76,7 +75,7 @@ namespace ini {
         return s;
     }
 
-    // перечислим доступные ключи секции
+    // РїРµСЂРµС‡РёСЃР»РёРј РґРѕСЃС‚СѓРїРЅС‹Рµ РєР»СЋС‡Рё СЃРµРєС†РёРё
     inline std::string make_suggestion_message(const std::string& section,
         const std::unordered_map<std::string, std::string>& kv) {
         std::ostringstream oss;
@@ -100,6 +99,12 @@ namespace ini {
             parse_file(filename);
         }
 
+        // Р—Р°РїСЂРµС‰Р°РµРј РєРѕРїРёСЂРѕРІР°РЅРёРµ/РїРµСЂРµРјРµС‰РµРЅРёРµ
+        ini_parser(const ini_parser&) = delete;
+        ini_parser & operator=(const ini_parser&) = delete;
+        ini_parser(ini_parser&&) = delete;
+        ini_parser & operator=(ini_parser&&) = delete;
+
         // "section.key"
         template <class T>
         T get_value(const std::string& section_dot_key) const {
@@ -107,7 +112,7 @@ namespace ini {
             return get_value<T>(parts[0], parts[1]);
         }
 
-        // секция + ключ
+        // СЃРµРєС†РёСЏ + РєР»СЋС‡
         template <class T>
         T get_value(const std::string& section, const std::string& key) const {
             auto s_it = data_.find(section);
@@ -123,11 +128,20 @@ namespace ini {
             return convert<T>(k_it->second, section, key);
         }
 
-        // опционально — проверить, есть ли ключ
+        // РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ РєР»СЋС‡Р°
         bool has(const std::string& section, const std::string& key) const {
             auto s_it = data_.find(section);
             if (s_it == data_.end()) return false;
             return s_it->second.count(key) != 0;
+        }
+
+        // РЈРґРѕР±РЅР°СЏ РѕР±С‘СЂС‚РєР° СЃ "section.key"
+        bool has_value(const std::string & section_dot_key) const {
+            auto parts = split_section_dot_key(section_dot_key);
+            return has(parts[0], parts[1]);
+        }
+        bool has_value(const std::string & section, const std::string & key) const {
+            return has(section, key);
         }
 
     private:
@@ -145,7 +159,7 @@ namespace ini {
             while (std::getline(in, line)) {
                 ++lineno;
 
-                // убрать UTF-8 BOM в первой строке
+                // СѓР±СЂР°С‚СЊ UTF-8 BOM РІ РїРµСЂРІРѕР№ СЃС‚СЂРѕРєРµ
                 if (lineno == 1 && line.size() >= 3 &&
                     (unsigned char)line[0] == 0xEF && (unsigned char)line[1] == 0xBB && (unsigned char)line[2] == 0xBF) {
                     line.erase(0, 3);
@@ -155,26 +169,26 @@ namespace ini {
                 if (starts_with_comment_or_empty(raw)) continue;
 
                 if (!raw.empty() && raw.front() == '[') {
-                    // секция
+                    // СЃРµРєС†РёСЏ
                     auto close = raw.find(']');
                     if (close == std::string::npos)
                         throw parse_error(lineno, "Missing closing ']' in section header");
 
-                    // до '[' должны быть только пробелы — но мы уже trim сделали
-                    // имя секции — внутри скобок
+                    // РґРѕ '[' РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ РїСЂРѕР±РµР»С‹ вЂ” РЅРѕ РјС‹ СѓР¶Рµ trim СЃРґРµР»Р°Р»Рё
+                    // РёРјСЏ СЃРµРєС†РёРё вЂ” РІРЅСѓС‚СЂРё СЃРєРѕР±РѕРє
                     std::string name = trim(std::string_view(raw).substr(1, close - 1));
 
-                    // после ']' могут быть пробелы и/или комментарий
+                    // РїРѕСЃР»Рµ ']' РјРѕРіСѓС‚ Р±С‹С‚СЊ РїСЂРѕР±РµР»С‹ Рё/РёР»Рё РєРѕРјРјРµРЅС‚Р°СЂРёР№
                     std::string after = trim(std::string_view(raw).substr(close + 1));
                     if (!after.empty() && after[0] != ';')
                         throw parse_error(lineno, "Unexpected characters after section header");
 
                     current_section = name;
-                    (void)data_[current_section]; // создать секцию при первом упоминании
+                    (void)data_[current_section]; // СЃРѕР·РґР°С‚СЊ СЃРµРєС†РёСЋ РїСЂРё РїРµСЂРІРѕРј СѓРїРѕРјРёРЅР°РЅРёРё
                     continue;
                 }
 
-                // присваивание key = value
+                // РїСЂРёСЃРІР°РёРІР°РЅРёРµ key = value
                 {
                     auto eq = raw.find('=');
                     if (eq == std::string::npos)
@@ -188,9 +202,9 @@ namespace ini {
                         throw parse_error(lineno, "Empty key name");
 
                     std::string val_with_comment = raw.substr(eq + 1);
-                    // допускаем произвольные пробелы вокруг '='
+                    // РґРѕРїСѓСЃРєР°РµРј РїСЂРѕРёР·РІРѕР»СЊРЅС‹Рµ РїСЂРѕР±РµР»С‹ РІРѕРєСЂСѓРі '='
                     std::string value = trim(strip_inline_comment(std::string_view(val_with_comment)));
-                    // пустое значение допустимо (пример: Mode=)
+                    // РїСѓСЃС‚РѕРµ Р·РЅР°С‡РµРЅРёРµ РґРѕРїСѓСЃС‚РёРјРѕ (РїСЂРёРјРµСЂ: Mode=)
 
 
                     data_[current_section][key] = value;
@@ -202,9 +216,9 @@ namespace ini {
         // Conversions
         template <class T>
         static T convert(const std::string& s, const std::string& section, const std::string& key) {
-            // Общий шаблон — для неподдержанных типов
+            // РћР±С‰РёР№ С€Р°Р±Р»РѕРЅ вЂ” РґР»СЏ РЅРµРїРѕРґРґРµСЂР¶Р°РЅРЅС‹С… С‚РёРїРѕРІ
             static_assert(sizeof(T) == 0, "Unsupported type for ini_parser::get_value<T>");
-            (void)s; (void)section; (void)key; // подавить warning
+            (void)s; (void)section; (void)key; // РїРѕРґР°РІРёС‚СЊ warning
             return T{};
         }
     };
@@ -216,7 +230,7 @@ namespace ini {
         return s;
     }
 
-    // целые
+    // С†РµР»С‹Рµ
     template <>
     inline int ini_parser::convert<int>(const std::string& s,
         const std::string& section, const std::string& key) {
@@ -245,7 +259,7 @@ namespace ini {
         }
     }
 
-    // вещественные
+    // РІРµС‰РµСЃС‚РІРµРЅРЅС‹Рµ
     template <>
     inline double ini_parser::convert<double>(const std::string& s,
         const std::string& section, const std::string& key) {
@@ -274,7 +288,7 @@ namespace ini {
         }
     }
 
-    // bool (true/false/yes/no/on/off/1/0 Регистр неважен)
+    // bool (true/false/yes/no/on/off/1/0 Р РµРіРёСЃС‚СЂ РЅРµРІР°Р¶РµРЅ)
     template <>
     inline bool ini_parser::convert<bool>(const std::string& s,
         const std::string& section, const std::string& key) {
