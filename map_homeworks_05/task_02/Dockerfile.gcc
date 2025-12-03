@@ -1,0 +1,5 @@
+FROM gcc:latest
+WORKDIR /app
+COPY src/ .
+RUN g++ -std=c++17 -O2 -o app Clients_queue.cpp
+CMD ["./app"]
